@@ -1,5 +1,4 @@
-# PRISM: A deep learning framework for prokaryotic expression element recognition, intensity, synthesis, and modulation based on DNA large language model
-
+# PRISM: Aframework forprokaryotic expressionelementrecognition, intensity, synthesis, and modulation based on DNA foundation model
 ![framework](framework.png)
 
 
