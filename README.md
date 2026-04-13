@@ -1,10 +1,10 @@
 # PRISM: A deep learning framework for prokaryotic expression element recognition, intensity, synthesis, and modulation based on DNA large language model
 
-![framework](framework.jpg)
+![framework](framework.png)
 
 
 ## 🔭Overview
-**PRISM** is a practical framework based on existing DNA LLMs (e.g., [DNABERT-2](https://github.com/MAGICS-LAB/DNABERT_2)) and combined a two-stage fine-tuning strategy for prokaryotic expression elements. Full fine-tuning based on **30 million** sequences collected from **8,447** prokaryotic species was employed to endow DNABERT-2 with prior knowledge of prokaryotic expression elements. Next, partial fine-tuning was further used to quickly build multiple downstream tasks models including authenticity determination, transcription level classification, de novo expression element generation, transcription level prediction, and component correlation analysis. Lastly, multiple downstream tasks were tested by wet experiments in model and non-model prokaryotes. This study highlights the broad applicability of the PRISM framework for prokaryotic expression elements and its potential in advancing synthetic biology.
+**PRISM** is a practical framework based on existing DNA Foundation Models (e.g., [DNABERT-2](https://github.com/MAGICS-LAB/DNABERT_2)) and combined a vertical continual learning strategy for prokaryotic expression elements. Domain-adaptive pre-training based on **30 million** sequences collected from **8,447** prokaryotic species was employed to endow DNABERT-2 with prior knowledge of prokaryotic expression elements. Next, task-specific fine-tuning was further used to quickly build multiple downstream tasks models including authenticity determination, transcription level classification, de novo expression element generation, transcription level prediction, and component level predictive dependency analysis. Lastly, multiple downstream tasks were tested by wet experiments in model and non-model prokaryotes. This study highlights the broad applicability of the PRISM framework for prokaryotic expression elements and its potential in advancing synthetic biology.
 
 
 ## 🎯Quick Start
