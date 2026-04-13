@@ -1,4 +1,4 @@
-# PRISM: Aframework forprokaryotic expressionelementrecognition, intensity, synthesis, and modulation based on DNA foundation model
+# PRISM: A framework for prokaryotic expression element recognition, intensity, synthesis, and modulation based on DNA foundation model
 ![framework](framework.png)
 
 
