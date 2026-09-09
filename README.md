@@ -62,6 +62,10 @@ python 1train/transcript_level_pred/main.py
 python 1train/component_correlation_analysis/main.py
 ```
 
+For additional evaluation-only experiments, including frozen reference-set
+prototypes, cross-dataset prototype transfer, and BLAST similarity audits,
+see [Additional evaluation experiments](3evaluate/README.md).
+
 
 ### Prediction
 * To predict the target sequence, first you need to perform the generation task and generate the target sequence. The default location for the output file **'gen_seqs.csv'** is in **'./results/predicts/'** folder.
