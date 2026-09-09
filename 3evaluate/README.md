@@ -1,8 +1,10 @@
 # Additional evaluation experiments
 
 This directory adds evaluation-only entry points to the existing PRISM demo.
-The original `1train/`, `2select/`, root README, dependencies, and model interfaces
-are unchanged. No pretraining, fine-tuning, optimizer, model-generation training,
+The existing framework, dependencies, and model architectures are retained;
+see [downstream compatibility notes](../1train/README.md) and
+[legacy selection fixes](../2select/README.md) for targeted maintenance updates.
+No pretraining, fine-tuning, optimizer, model-generation training,
 server orchestration, model weights, or experiment datasets are included here.
 
 | Entry point | Purpose |
@@ -12,6 +14,7 @@ server orchestration, model weights, or experiment datasets are included here.
 | `blast.py run` | Fixed-parameter, explicitly scoped local BLAST search |
 | `blast.py summarize` | Receipt validation, best hits, threshold categories, and denominators |
 | `check_evaluation.py` | Offline synthetic checks without a model/database download |
+| `check_legacy.py` | CPU checks for legacy label/checkpoint compatibility and selection edge cases |
 
 Use the Python environment described in the root README. Prototype scoring uses
 NumPy and scikit-learn; encoding additionally uses PyTorch and Transformers.

@@ -17,6 +17,22 @@ from dataloader import load_dataframe, make_loader, make_loader_predict
 from utils import AverageMeter, to_gpu
 
 
+def load_checkpoint(path, map_location, num_class):
+    """Accept the newer head name without changing the public model or relaxing strict loading."""
+    state = torch.load(path, map_location=map_location)
+    mapped = {}
+    for key, value in state.items():
+        prefix = 'module.' if key.startswith('module.') else ''
+        name = key[len(prefix):]
+        if num_class > 2 and name.startswith('classifier.'):
+            name = 'classification.' + name[len('classifier.'):]
+        key = prefix + name
+        if key in mapped:
+            raise ValueError(f'Checkpoint contains conflicting classifier aliases: {key}')
+        mapped[key] = value
+    return mapped
+
+
 class Trainer(object):
     def __init__(self, args, config):
         self.writer = args.writer
@@ -52,7 +68,7 @@ class Trainer(object):
 
     def test(self):
         data_loader = make_loader(self.args, self.config, self.df_val, self.tokenizer)
-        check_point = torch.load(os.path.join(self.config['checkpoint_dir'], "last.pth"), map_location=self.args.device)
+        check_point = load_checkpoint(os.path.join(self.config['checkpoint_dir'], "last.pth"), self.args.device, self.config['num_class'])
         
         self.model.load_state_dict(check_point)
         self.logger.info("Loaded model.")
@@ -72,7 +88,7 @@ class Trainer(object):
             with torch.no_grad():
                 with autocast(device_type='cuda', dtype=torch.float16):
                     preds, feature = self.model(X, mask)
-                    loss = self.criterion(preds, y)
+                    loss = self.criterion(preds, y if self.config['num_class'] == 2 else y.long())
             losses.update(loss.item(), batch_size)
             predictions.append(preds)
             Y.append(y)
@@ -99,7 +115,7 @@ class Trainer(object):
     def predict(self):
         data_loader = make_loader_predict(self.args, self.config, self.df_predict, self.tokenizer)
         
-        check_point = torch.load(os.path.join(self.config['checkpoint_dir'], "last.pth"), map_location=self.args.device)
+        check_point = load_checkpoint(os.path.join(self.config['checkpoint_dir'], "last.pth"), self.args.device, self.config['num_class'])
         self.model.load_state_dict(check_point)
         self.logger.info("Loaded model.")
 
@@ -137,8 +153,13 @@ class Trainer(object):
         if self.config['num_class'] == 2:
             y_pred = 1 / (1 + np.exp(-y_pred)) # sigmoid
             
-            fpr, tpr, thresholds = sklearn.metrics.roc_curve(y_true, y_pred)
-            auc = sklearn.metrics.auc(fpr, tpr)
+            if len(np.unique(y_true)) == 2:
+                fpr, tpr, thresholds = sklearn.metrics.roc_curve(y_true, y_pred)
+                auc = sklearn.metrics.auc(fpr, tpr)
+            else:
+                # AUROC is undefined for a single-class subset, not zero or one.
+                fpr, tpr, thresholds = np.array([]), np.array([]), np.array([])
+                auc = float('nan')
             
             y_pred_class = np.round(y_pred)
             accuracy = sklearn.metrics.accuracy_score(y_true, y_pred_class)

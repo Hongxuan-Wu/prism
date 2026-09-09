@@ -38,6 +38,9 @@ tar -zxvf prism_data.tar.gz
 
 
 ### Testing
+For checkpoint compatibility and test-subset handling, see
+[Downstream evaluation notes](1train/README.md).
+
 * To run the downstream tasks, you need to set the path and modify the mode to **'test'**.
 ```python
 # Modify the path of the models and data
@@ -94,13 +97,16 @@ python 1train/xxx/main.py
 # Extract the blast tool
 tar -zxvf ncbi-blast-2.16.0+-x64-linux.tar.gz
 
-# Modify paths
-root_dir = '/xxx/prism/'
-blast_dir = '/xxx/ncbi-blast-2.16.0+/'
-
-# Run
-python 2select/main.py
+# Run with local paths and a fresh output directory
+python 2select/main.py \
+  --blast-dir /xxx/ncbi-blast-2.16.0+ \
+  --predict-dir /xxx/predictions \
+  --output-dir /xxx/fresh_selection
 ```
+See [Selection notes](2select/README.md) for input alignment, reporter-boundary
+handling, and successful no-hit results. This legacy single-genome search is
+separate from the `core_nt` audit in `3evaluate`.
+
 We integrate the results of these two parts, determine some sequences and conduct wet experiments for verification. 
 
 

@@ -81,6 +81,10 @@ def load_dataframe(args, config):
         return df_predict
 
 def make_loader(args, config, df_valid, tokenizer):
+    if config['num_class'] not in (2, 3, 4):
+        raise ValueError('num_class must be 2, 3, or 4')
+    if df_valid.empty or not df_valid['intensity_cls'].isin(range(config['num_class'])).all():
+        raise ValueError('Test labels must be nonempty integer class indices within num_class')
     valid_dataset = PromoterDataset(df=df_valid, tokenizer=tokenizer)
     
     valid_loader = DataLoader(
@@ -143,10 +147,8 @@ class PromoterDataset(Dataset):
 
         sequence = (df['promoters'] + df['genes']).tolist()
         
-        if len(set(df['intensity_cls'])) == 2:        
-            self.labels = torch.tensor(df['intensity_cls'].tolist(), dtype=torch.float32).float()
-        else:
-            self.labels = torch.tensor(df['intensity_cls'].tolist(), dtype=torch.int64)
+        # The configured loss, not the classes observed in a subset, determines the target dtype.
+        self.labels = torch.tensor(df['intensity_cls'].tolist(), dtype=torch.float32)
         
         self.seq_output = tokenizer(
             text=sequence, 
